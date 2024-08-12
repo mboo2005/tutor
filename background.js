@@ -2,7 +2,7 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: "aiAssistant",
-    title: "AI Assistant讲解",
+    title: "AI Tutor讲解",
     contexts: ["selection"]
   });
 });
