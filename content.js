@@ -75,9 +75,19 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   });
 
 async function fetchOpenAI(prompt) {
-    const apiKey = "sk-459568f979234fa6a3f6fee7b5700d67"
-    const endpoint = "https://api.deepseek.com/v1/chat/completions"
-  
+    const { modelSettings = {} } = await chrome.storage.sync.get('modelSettings');
+    if(Object.keys(modelSettings).length === 0){
+      alert("请先选择模型")
+      throw new Error("api key error");
+    }
+    if(!modelSettings["api_key"]){
+      alert("请先设置模型api key")
+      throw new Error("api key error");
+    }
+    const apiKey = modelSettings["api_key"]
+    const endpoint = modelSettings["base_url"]+"/chat/completions"
+    const model = modelSettings["model"]
+    const eng_level = modelSettings["eng_level"]
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -85,12 +95,15 @@ async function fetchOpenAI(prompt) {
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        'model': 'deepseek-chat',
+        'model': model,
         'messages': [
           {'role':'system',
-            'content':"下面我让你来充当翻译家，你的目标是把任何语言翻译成中文，请翻译时不要带翻译腔，而是要翻译得自然、流畅和地道，使用优美和高雅的表达方式。对于结果复杂\
-            的句子，分析语法结构和词组。输出格式参考：1.翻译： xx （句子翻译）\
-            2.难词、语法等： xx 对难词做解释，我是一个有3000单词量的学生。3. 专有名词：xx，对其中的专业词语做解释，如果有才说这句话，没有不用说"
+            'content':"下面我让你来充当翻译家，你的目标是把任何语言翻译成中文，请翻译时不要带翻译腔，而是要翻译得自然、流畅和地道，\
+            使用优美和高雅的表达方式。请根据用户的英语水平："+eng_level+",对于结果复杂\
+            的句子，分析语法结构和词组。输出格式参考(如果没有需要解释的，对应段落不用出）：\
+            xx （句子翻译）\
+            xx 对难词、语法做解释，每个词一行\
+            xx，对其中的专业词语做解释"
           },
           {
             'role': 'user',

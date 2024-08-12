@@ -6,53 +6,31 @@
 
 createForm().catch(console.error);
 
-const modelList = {
-  'deepseek': 'deepseek',
-  'qwen': 'qwen',
-  // 添加更多模型
-};
-
 async function createForm() {
+
   const form = document.getElementById('modelForm');
   const { modelSettings = {} } = await chrome.storage.sync.get('modelSettings');
-
-  for (const [model, modelName] of Object.entries(modelList)) {
-    const apiKeyInput = document.createElement('input');
-    apiKeyInput.type = 'text';
-    apiKeyInput.name = `${model}_apikey`;
-    apiKeyInput.placeholder = 'API Key';
-    apiKeyInput.value = modelSettings[model]?.apikey || '';
-
-    const baseUrlInput = document.createElement('input');
-    baseUrlInput.type = 'text';
-    baseUrlInput.name = `${model}_base_url`;
-    baseUrlInput.placeholder = 'Base URL';
-    baseUrlInput.value = modelSettings[model]?.base_url || '';
-
-    const span = document.createElement('span');
-    span.textContent = modelName;
-
-    const div = document.createElement('div');
-    div.className = 'model-item';
-    div.appendChild(span);
-    div.appendChild(apiKeyInput);
-    div.appendChild(baseUrlInput);
-
-    form.appendChild(div);
-  }
+  form["api_key"].value = modelSettings["api_key"]
+  form["model"].value = modelSettings["model"] || "deepseek"
+  form["base_url"].value = modelSettings["base_url"]
+  form["eng_level"].value = modelSettings["eng_level"] || "四级"
 
   form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const settings = {};
+    try {
+      event.preventDefault();
+      const form = document.getElementById('modelForm');
 
-    for (const [model, modelName] of Object.entries(modelList)) {
-      const apikey = form[`${model}_apikey`].value;
-      const base_url = form[`${model}_base_url`].value;
-      settings[model] = { apikey, base_url };
+      const model = form["model"].value;
+      const api_key = form["api_key"].value;
+      const base_url = form["base_url"].value;
+      const eng_level = form["eng_level"].value;
+      const settings = { model, api_key, base_url, eng_level };
+
+      await chrome.storage.sync.set({ modelSettings: settings });
+      alert('设置已保存');
+    } catch (error) {
+      console.error(error)
     }
-
-    await chrome.storage.sync.set({ modelSettings: settings });
-    alert('设置已保存');
   });
 }
 

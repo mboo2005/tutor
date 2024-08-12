@@ -1,28 +1,54 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>大模型API设置</title>
-  <style>
-    .model-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .model-item span {
-      width: 100px;
-      margin-right: 10px;
-    }
-    .model-item input {
-      margin-right: 10px;
-    }
-  </style>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+  <title>带讲解的翻译</title>
+  
+  <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
-<body>
-  <form id="modelForm">
-    <button type="submit">保存设置</button>
+
+<body style="width: 50em;">
+  <h1>Tutor 带讲解的翻译--你的英语老师</h1>
+  <p>看英文文章看不懂？用我来翻译+讲解，大模型实现，不仅翻译的好，而且可以根据你的英语水平讲解难点、语法</p>
+  <div class="tutor-container">
+    <form id="modelForm" >
+      <div style="display: flex; flex-direction: column;align-items: flex-start;justify-content: space-around; line-height: 1.5em;  
+      background-color: #BBDEFB;
+      padding: 1em;height: 10em;">
+        <div>模型：
+        <select style="width: 10em;" name="model" >
+          <option value='deepseek-chat' selected>deepseek</option>
+        </select></div>
+        <div>
+          api key:<input placeholder="api key" name="api_key" style="width:20em" />
+          <div class="tip">api key保存在本地，不会泄露；注册deepseek api key前去：<a href="https://platform.deepseek.com/">https://platform.deepseek.com/</a> 很便宜</div>
+        </div>
+        <div>
+          base url:<input placeholder="base url" name="base_url" style="width:20em" value="https://api.deepseek.com/v1" />
+        </div>
+        
+        
+      </div>
+      <div style="display: flex;flex-direction: row;align-items: center;background-color: #BBDEFB;
+      padding: 1em;margin: 1em auto;">
+        英语水平：<select name="eng_level">
+          <option value="初中">初中+</option>
+          <option value="高中">高中+</option>
+          <option value="四级">四级+</option>
+          <option value="六级">六级+</option>
+          <option value="专业四级">专业四级+</option>
+          <option value="专业八级">专业八级+</option>
+          <option value="雅思">雅思+</option>
+          <option value="托福">托福+</option>
+        </select>
+      
+        </div>
+      
+      <div style="text-align: center;font-size: 1.5em;"><button type="submit">保存设置</button></div>
+  </div>
   </form>
   <script src="popup.js" type="module"></script>
-  <script src="https://cdn.jsdelivr.net/npm/openai@4.53.2/index.min.js"></script>
+
 </body>
+
 </html>
